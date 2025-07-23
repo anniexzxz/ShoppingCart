@@ -101,11 +101,11 @@ app.get('/inventory', checkAuthenticated, checkAdmin, (req, res) => {
     });
 });
 
-app.get('/sign-up', (req, res) => {
-    res.render('sign-up', { messages: req.flash('error'), formData: req.flash('formData')[0] });
+app.get('/signup', (req, res) => {
+    res.render('signup', { messages: req.flash('error'), formData: req.flash('formData')[0] });
 });
 
-app.post('/sign-up', validateRegistration, (req, res) => {
+app.post('/signup', validateRegistration, (req, res) => {
 
     const { username, email, password, dob, contact, role } = req.body;
 
