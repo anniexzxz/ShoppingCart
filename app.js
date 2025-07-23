@@ -256,6 +256,7 @@ app.post('/addProduct', upload.single('image'),  (req, res) => {
     });
 });
 
+
 app.get('/updateProduct/:id',checkAuthenticated, checkAdmin, (req,res) => {
     const productId = req.params.id;
     const sql = 'SELECT * FROM products WHERE productId = ?';
@@ -284,9 +285,9 @@ app.post('/updateProduct/:id', upload.single('image'), (req, res) => {
         image = req.file.filename; // set image to be new image filename
     } 
 
-    const sql = 'UPDATE products SET productName = ? , quantity = ?, price = ?, image =? WHERE productId = ?';
+    const sql = 'UPDATE products SET productName = ? , quantity = ?, price = ?, image = ?, description =?, url= ?, WHERE productId = ?';
     // Insert the new product into the database
-    connection.query(sql, [name, quantity, price, image, productId], (error, results) => {
+    connection.query(sql, [name, quantity, price, image, description, url, productId], (error, results) => {
         if (error) {
             // Handle any error that occurs during the database operation
             console.error("Error updating product:", error);
