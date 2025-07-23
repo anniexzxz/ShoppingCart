@@ -58,8 +58,11 @@
       </table>
       <h4>Total: $<%= total.toFixed(2) %></h4>
 
-      <div class="mt-4">
-        <a href="/shopping" class="btn btn-secondary">Back to Shopping</a>
+      <div class="d-flex mt-4">
+        <a href="/shopping" class="btn btn-secondary me-2">Back to Shopping</a>
+        <form action="/checkout" method="POST">
+          <button type="submit" class="btn btn-secondary">Checkout</button>
+        </form>
       </div>
     <% } %>
   </div>
