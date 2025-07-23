@@ -173,6 +173,10 @@ app.post('/add-to-cart/:id', checkAuthenticated, (req, res) => {
         if (results.length > 0) {
             const product = results[0];
 
+            if (product.quantity < quantity){
+                req.flash('error', 'Not enough stock available.')
+                return res.redirect('/shopping')
+            }
             // Initialize cart in session if not exists
             if (!req.session.cart) {
                 req.session.cart = [];
@@ -205,6 +209,57 @@ app.get('/cart', checkAuthenticated, (req, res) => {
     const cart = req.session.cart || [];
     res.render('cart', { cart, user: req.session.user });
 });
+
+app.post('/checkout', checkAuthenticated, (req, res) => {
+    const cart = req.session.cart;
+
+    if (!cart || cart.length === 0) {
+        req.flash('error', 'Your cart is empty.');
+        return res.redirect('/cart');
+    }
+
+    function checkStock(index) {
+        if (index >= cart.length) {
+            return updateStock(0);
+        }
+
+        const item = cart[index];
+        connection.query('SELECT quantity FROM products WHERE productId = ?', [item.productId], (error, results) => {
+            if (error) {
+                console.error('Error checking stock:', error);
+                return res.status(500).send('Error processing checkout');
+            }
+
+            if (!results[0] || results[0].quantity < item.quantity) {
+                req.flash('error', `Not enough stock for ${item.productName}.`);
+                return res.redirect('/cart');
+            }
+
+            checkStock(index + 1);
+        });
+    }
+
+    function updateStock(index) {
+        if (index >= cart.length) {
+            req.session.cart = [];
+            req.flash('success', 'Checkout successful! Thank you for your purchase.');
+            return res.redirect('/shopping');
+        }
+
+        const item = cart[index];
+        connection.query('UPDATE products SET quantity = quantity - ? WHERE productId = ?', [item.quantity, item.productId], (error) => {
+            if (error) {
+                console.error('Error updating stock:', error);
+                return res.status(500).send('Error processing checkout');
+            }
+
+            updateStock(index + 1);
+        });
+    }
+
+    checkStock(0);
+});
+
 
 app.get('/logout', (req, res) => {
     req.session.destroy();
