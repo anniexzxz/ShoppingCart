@@ -39,25 +39,30 @@
                 <input type="text" id="username" name="username" class="form-control" required 
                 <% if (formData && formData.username) { %> value="<%= formData.username %>" <% } else { %> value="" <% } %>>
             </div>
+
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" class="form-control" required 
                 <% if (formData && formData.email) { %> value="<%= formData.email %>" <% } else { %> value="" <% } %>>
             </div>
+
             <div class="form-group">
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" class="form-control" required>
             </div>
+
             <div class="form-group">
                 <label for="dob">Date of Birth:</label>
-                <input type="date" id="dob" name="dob" class="form-control" required> 
-                <% if (formData && formData.dob) { %> value="<%= formData.dob %>" <% } %>>
+                <input type="date" id="dob" name="dob" class="form-control" required 
+                <% if (formData && formData.dob) { %> value="<%= formData.dob %>" <% } else { %> value="" <% } %>>
             </div>
+
             <div class="form-group">
                 <label for="contact">Contact Number:</label>
-                <input type="text" id="contact" name="contact" class="form-control" required> 
+                <input type="text" id="contact" name="contact" class="form-control" required 
                 <% if (formData && formData.contact) { %> value="<%= formData.contact %>" <% } else { %> value="" <% } %>>
             </div>
+
             <div class="form-group">
                 <label for="role">Role:</label>
                 <select id="role" name="role" class="form-control" required>
