@@ -83,7 +83,7 @@ const validateRegistration = (req, res, next) => {
     if (password.length < 6) {
         req.flash('error', 'Password should be at least 6 or more characters long');
         req.flash('formData', req.body);
-        return res.redirect('/register');
+        return res.redirect('/sign-up');
     }
     next();
 };
@@ -101,11 +101,11 @@ app.get('/inventory', checkAuthenticated, checkAdmin, (req, res) => {
     });
 });
 
-app.get('/register', (req, res) => {
-    res.render('register', { messages: req.flash('error'), formData: req.flash('formData')[0] });
+app.get('/sign-up', (req, res) => {
+    res.render('sign-up', { messages: req.flash('error'), formData: req.flash('formData')[0] });
 });
 
-app.post('/register', validateRegistration, (req, res) => {
+app.post('/sign-up', validateRegistration, (req, res) => {
 
     const { username, email, password, address, contact, role } = req.body;
 
@@ -115,7 +115,7 @@ app.post('/register', validateRegistration, (req, res) => {
             throw err;
         }
         console.log(result);
-        req.flash('success', 'Registration successful! Please log in.');
+        req.flash('success', 'Sign up successful! Please log in.');
         res.redirect('/login');
     });
 });
@@ -188,7 +188,9 @@ app.post('/add-to-cart/:id', checkAuthenticated, (req, res) => {
                     productName: product.productName,
                     price: product.price,
                     quantity: quantity,
-                    image: product.image
+                    image: product.image,
+                    description: product.description,
+                    url: product.url
                 });
             }
 

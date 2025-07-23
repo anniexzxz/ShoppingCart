@@ -25,7 +25,7 @@
         </div>
       </nav>
     <div class="container">
-        <h1 class="mt-5">Register</h1>
+        <h1 class="mt-5">Sign Up</h1>
         <% if (messages && messages.length > 0) { %>
             <div class="alert alert-danger">
                 <% messages.forEach(function(message) { %>
@@ -33,7 +33,7 @@
                 <% }); %>
             </div>
         <% } %>
-        <form action="/register" method="POST" class="mt-4">
+        <form action="/sign-up" method="POST" class="mt-4">
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" class="form-control" required 
@@ -65,7 +65,7 @@
                     <option value="admin" <% if (formData && formData.role === 'admin') { %> selected <% } %>>Admin</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
         </form>
     </div>
 </body>
