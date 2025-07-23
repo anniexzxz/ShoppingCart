@@ -21,7 +21,7 @@ const connection = mysql.createConnection({
     host: 'c237-boss.mysql.database.azure.com',
     user: 'c237boss',
     password: 'c237boss!',
-    database: 'c237_024_team2' //need change to our database name
+    database: 'c237_024_shoppipipi' //need change to our database name
   });
 
 connection.connect((err) => {
