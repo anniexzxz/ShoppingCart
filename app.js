@@ -74,16 +74,16 @@ const checkAdmin = (req, res, next) => {
 
 // Middleware for form validation
 const validateRegistration = (req, res, next) => {
-    const { username, email, password, address, contact, role } = req.body;
+    const { username, email, password, dob, contact, role } = req.body;
 
-    if (!username || !email || !password || !address || !contact || !role) {
+    if (!username || !email || !password || !dob || !contact || !role) {
         return res.status(400).send('All fields are required.');
     }
     
     if (password.length < 6) {
         req.flash('error', 'Password should be at least 6 or more characters long');
         req.flash('formData', req.body);
-        return res.redirect('/sign-up');
+        return res.redirect('/signup');
     }
     next();
 };
@@ -101,16 +101,16 @@ app.get('/inventory', checkAuthenticated, checkAdmin, (req, res) => {
     });
 });
 
-app.get('/sign-up', (req, res) => {
-    res.render('sign-up', { messages: req.flash('error'), formData: req.flash('formData')[0] });
+app.get('/signup', (req, res) => {
+    res.render('signup', { messages: req.flash('error'), formData: req.flash('formData')[0] });
 });
 
-app.post('/sign-up', validateRegistration, (req, res) => {
+app.post('/signup', validateRegistration, (req, res) => {
 
-    const { username, email, password, address, contact, role } = req.body;
+    const { username, email, password, dob, contact, role } = req.body;
 
-    const sql = 'INSERT INTO users (username, email, password, address, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
-    connection.query(sql, [username, email, password, address, contact, role], (err, result) => {
+    const sql = 'INSERT INTO users (username, email, password, dob, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
+    connection.query(sql, [username, email, password, dob, contact, role], (err, result) => {
         if (err) {
             throw err;
         }
@@ -173,6 +173,10 @@ app.post('/add-to-cart/:id', checkAuthenticated, (req, res) => {
         if (results.length > 0) {
             const product = results[0];
 
+            if (product.quantity < quantity){
+                req.flash('error', 'Not enough stock available.')
+                return res.redirect('/shopping')
+            }
             // Initialize cart in session if not exists
             if (!req.session.cart) {
                 req.session.cart = [];
@@ -214,6 +218,56 @@ app.post('/cart/delete/:id', (req, res) => {
     res.redirect('/cart');
 });
 
+app.post('/checkout', checkAuthenticated, (req, res) => {
+    const cart = req.session.cart;
+
+    if (!cart || cart.length === 0) {
+        req.flash('error', 'Your cart is empty.');
+        return res.redirect('/cart');
+    }
+
+    function checkStock(index) {
+        if (index >= cart.length) {
+            return updateStock(0);
+        }
+
+        const item = cart[index];
+        connection.query('SELECT quantity FROM products WHERE productId = ?', [item.productId], (error, results) => {
+            if (error) {
+                console.error('Error checking stock:', error);
+                return res.status(500).send('Error processing checkout');
+            }
+
+            if (!results[0] || results[0].quantity < item.quantity) {
+                req.flash('error', `Not enough stock for ${item.productName}.`);
+                return res.redirect('/cart');
+            }
+
+            checkStock(index + 1);
+        });
+    }
+
+    function updateStock(index) {
+        if (index >= cart.length) {
+            req.session.cart = [];
+            req.flash('success', 'Checkout successful! Thank you for your purchase.');
+            return res.redirect('/shopping');
+        }
+
+        const item = cart[index];
+        connection.query('UPDATE products SET quantity = quantity - ? WHERE productId = ?', [item.quantity, item.productId], (error) => {
+            if (error) {
+                console.error('Error updating stock:', error);
+                return res.status(500).send('Error processing checkout');
+            }
+
+            updateStock(index + 1);
+        });
+    }
+
+    checkStock(0);
+});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
@@ -238,33 +292,26 @@ app.get('/product/:id', checkAuthenticated, (req, res) => {
   });
 });
 
+// GET route to render the Add Product form
 app.get('/addProduct', checkAuthenticated, checkAdmin, (req, res) => {
-    res.render('addProduct', {user: req.session.user } ); 
-});
+    res.render('addProduct', { user: req.session.user });
+  });
 
-app.post('/addProduct', upload.single('image'),  (req, res) => {
-    // Extract product data from the request body
-    const { name, quantity, price} = req.body;
-    let image;
-    if (req.file) {
-        image = req.file.filename; // Save only the filename
-    } else {
-        image = null;
-    }
-
+  // POST route to handle form submission
+  app.post('/addProduct', upload.single('image'), (req, res) => {
+    const { name, quantity, price } = req.body;
+    const image = req.file ? req.file.filename : null;
+  
     const sql = 'INSERT INTO products (productName, quantity, price, image) VALUES (?, ?, ?, ?)';
-    // Insert the new product into the database
-    connection.query(sql , [name, quantity, price, image], (error, results) => {
-        if (error) {
-            // Handle any error that occurs during the database operation
-            console.error("Error adding product:", error);
-            res.status(500).send('Error adding product');
-        } else {
-            // Send a success response
-            res.redirect('/inventory');
-        }
+    connection.query(sql, [name, quantity, price, image], (error, results) => {
+      if (error) {
+        console.error("Error adding product:", error);
+        res.status(500).send('Error adding product');
+      } else {
+        res.redirect('/inventory');
+      }
     });
-});
+  });
 
 
 app.get('/updateProduct/:id',checkAuthenticated, checkAdmin, (req,res) => {

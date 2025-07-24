@@ -9,7 +9,7 @@
     <!-- Navbar -->
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">Shop App</a>
+      <a class="navbar-brand" href="/">Shoppipipi</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -63,8 +63,11 @@
       </table>
       <h4>Total: $<%= total.toFixed(2) %></h4>
 
-      <div class="mt-4">
-        <a href="/shopping" class="btn btn-secondary">Back to Shopping</a>
+      <div class="d-flex mt-4">
+        <a href="/shopping" class="btn btn-secondary me-2">Back to Shopping</a>
+        <form action="/checkout" method="POST">
+          <button type="submit" class="btn btn-secondary">Checkout</button>
+        </form>
       </div>
     <% } %>
   </div>
