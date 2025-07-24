@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shoppipipi App</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <title>Shoppipipi App</title>
 </head>
 <body>
+
   <!-- Navbar -->
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <div class="container-fluid">
@@ -18,10 +19,12 @@
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="/inventory">inventory</a>
+            <a class="nav-link" href="/inventory">Inventory</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/addProduct">Add Product</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/logout">Logout</a>
           </li>
         </ul>
@@ -35,7 +38,8 @@
     <form action="/addProduct" method="POST" enctype="multipart/form-data" style="max-width: 500px; margin: auto;">
       <div class="mb-3">
         <label for="name" class="form-label">Product Name</label>
-        </div>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
 
       <div class="mb-3">
         <label for="quantity" class="form-label">Quantity</label>
@@ -47,7 +51,8 @@
         <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required>
       </div>
 
-      Image</label>
+      <div class="mb-3">
+        <label for="image" class="form-label">Image</label>
         <input type="file" class="form-control" id="image" name="image" accept="image/*">
       </div>
 
@@ -60,5 +65,8 @@
       <p>Logged in as: <strong><%= user.username %></strong></p>
     </div>
   </div>
+
 </body>
 </html>
+
+
