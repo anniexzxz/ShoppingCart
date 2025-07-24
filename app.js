@@ -206,6 +206,14 @@ app.get('/cart', checkAuthenticated, (req, res) => {
     res.render('cart', { cart, user: req.session.user });
 });
 
+app.post('/cart/delete/:id', (req, res) => {
+    const idToDelete = parseInt(req.params.id);  // Make sure it's a number
+    if (req.session.cart) {
+        req.session.cart = req.session.cart.filter(item => item.productId !== idToDelete);
+    }
+    res.redirect('/cart');
+});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');

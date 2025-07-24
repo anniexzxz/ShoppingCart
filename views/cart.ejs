@@ -50,10 +50,10 @@
             <tr>
                 <td><%= cart[i].productName %></td>
                 <td><img src="/images/<%= cart[i].image %>" width="80" class="img-thumbnail"></td>
-                <td><%= cart[i].quantity %></td>
+                <td><input type="number" value="<%= cart[i].quantity %>" min="1"></td>
                 <td>$<%= (cart[i].price * cart[i].quantity).toFixed(2) %></td>
                 <td>
-                  <form action="/cart/delete/<%= cart[i].id %>" method="POST">
+                  <form action="/cart/delete/<%= cart[i].productId %>" method="POST">
                     <button type="submit" class="btn btn-danger">Delete</button>
                   </form>
             </tr>
