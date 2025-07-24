@@ -285,33 +285,26 @@ app.get('/product/:id', checkAuthenticated, (req, res) => {
   });
 });
 
+// GET route to render the Add Product form
 app.get('/addProduct', checkAuthenticated, checkAdmin, (req, res) => {
-    res.render('addProduct', {user: req.session.user } ); 
-});
+    res.render('addProduct', { user: req.session.user });
+  });
 
-app.post('/addProduct', upload.single('image'),  (req, res) => {
-    // Extract product data from the request body
-    const { name, quantity, price} = req.body;
-    let image;
-    if (req.file) {
-        image = req.file.filename; // Save only the filename
-    } else {
-        image = null;
-    }
-
+  // POST route to handle form submission
+  app.post('/addProduct', upload.single('image'), (req, res) => {
+    const { name, quantity, price } = req.body;
+    const image = req.file ? req.file.filename : null;
+  
     const sql = 'INSERT INTO products (productName, quantity, price, image) VALUES (?, ?, ?, ?)';
-    // Insert the new product into the database
-    connection.query(sql , [name, quantity, price, image], (error, results) => {
-        if (error) {
-            // Handle any error that occurs during the database operation
-            console.error("Error adding product:", error);
-            res.status(500).send('Error adding product');
-        } else {
-            // Send a success response
-            res.redirect('/inventory');
-        }
+    connection.query(sql, [name, quantity, price, image], (error, results) => {
+      if (error) {
+        console.error("Error adding product:", error);
+        res.status(500).send('Error adding product');
+      } else {
+        res.redirect('/inventory');
+      }
     });
-});
+  });
 
 
 app.get('/updateProduct/:id',checkAuthenticated, checkAdmin, (req,res) => {
