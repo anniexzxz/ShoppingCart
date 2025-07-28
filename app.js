@@ -155,13 +155,6 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.get('/shopping', checkAuthenticated, (req, res) => {
-    // Fetch data from MySQL
-    connection.query('SELECT * FROM products', (error, results) => {
-        if (error) throw error;
-        res.render('shopping', { user: req.session.user, products: results });
-      });
-});
 
 app.post('/add-to-cart/:id', checkAuthenticated, (req, res) => {
     const productId = parseInt(req.params.id);
@@ -342,7 +335,7 @@ app.post('/updateProduct/:id', upload.single('image'), (req, res) => {
         image = req.file.filename; // set image to be new image filename
     } 
 
-    const sql = 'UPDATE products SET productName = ? , quantity = ?, price = ?, image = ?, description =?, url= ?, WHERE productId = ?';
+    const sql = 'UPDATE products SET productName = ? , quantity = ?, price = ?, image = ?, description =?, url= ? WHERE productId = ?';
     // Insert the new product into the database
     connection.query(sql, [name, quantity, price, image, description, url, productId], (error, results) => {
         if (error) {
@@ -356,20 +349,25 @@ app.post('/updateProduct/:id', upload.single('image'), (req, res) => {
     });
 });
 
-app.get('/deleteProduct/:id', (req, res) => {
-    const productId = req.params.id;
+app.get('/shopping', checkAuthenticated, (req, res) => {
+    const search = req.query.search || '';  // default to empty string if undefined
 
-    connection.query('DELETE FROM products WHERE productId = ?', [productId], (error, results) => {
-        if (error) {
-            // Handle any error that occurs during the database operation
-            console.error("Error deleting product:", error);
-            res.status(500).send('Error deleting product');
-        } else {
-            // Send a success response
-            res.redirect('/inventory');
-        }
+    let sql = 'SELECT * FROM products';
+    let params = [];
+
+    if (search) {
+        sql += ' WHERE productName LIKE ?';
+        params.push(`%${search}%`);
+    }
+
+    connection.query(sql, params, (error, results) => {
+        if (error) throw error;
+        // Pass search to EJS to prevent 'search is not defined' error
+        res.render('shopping', { user: req.session.user, products: results, search });
     });
 });
+
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
