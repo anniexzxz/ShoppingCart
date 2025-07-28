@@ -349,6 +349,20 @@ app.post('/updateProduct/:id', upload.single('image'), (req, res) => {
     });
 });
 
+app.get('/deleteProduct/:id', (req, res) => {
+    const productId = req.params.id;
+    connection.query('DELETE FROM products WHERE productId = ?', [productId], (error, results) => {
+    if (error) {
+        // Handle any error that occurs during the database operation
+        console.error("Error deleting product:", error);
+        res.status(500).send('Error deleting product');
+    } else {
+        // Send a success response
+        res.redirect('/inventory');
+    }
+    });
+});
+
 app.get('/shopping', checkAuthenticated, (req, res) => {
     const search = req.query.search || '';  // default to empty string if undefined
 
@@ -371,3 +385,4 @@ app.get('/shopping', checkAuthenticated, (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
