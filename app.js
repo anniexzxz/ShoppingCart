@@ -186,7 +186,6 @@ app.post('/add-to-cart/:id', checkAuthenticated, (req, res) => {
                     price: product.price,
                     quantity: quantity,
                     image: product.image,
-                    description: product.description,
                     url: product.url
                 });
             }
