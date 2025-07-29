@@ -32,6 +32,25 @@
       </div>
     </div>
   </nav>
+    </div>
+  </nav>
+
+    <% if (success.length > 0) { %>
+    <div class="alert alert-success">
+      <% success.forEach(function(msg) { %>
+        <p><%= msg %></p>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <% if (error.length > 0) { %>
+    <div class="alert alert-danger">
+      <% error.forEach(function(msg) { %>
+        <p><%= msg %></p>
+      <% }) %>
+    </div>
+  <% } %>
+
   <!-- Contact Form -->
     <div class="container mt-5">
         <h1 class="text-center mb-4">Contact Us</h1>
