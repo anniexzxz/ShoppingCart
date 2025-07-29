@@ -45,6 +45,8 @@
                 <p><b>Product Image:</b><br> <img src = "../images/<%= product.image %>" width="20%"></p>
                 <p><b>Product Quantity:</b><br> <%= product.quantity %></p>
                 <p><b>Price:</b><br> $<%= product.price.toFixed(2) %></p> 
+                <p><b>Description:</b><br> <%= product.description %></p>
+                <p><b>Category:</b><br> <%= product.category %></p>
             </div>
         <% } else { %>
             <p>No product found.</p>
