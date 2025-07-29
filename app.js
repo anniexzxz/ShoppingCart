@@ -389,7 +389,27 @@ app.get('/shopping', checkAuthenticated, (req, res) => {
     });
 });
 
+//Get route for contact page
+app.get('/contact', (req, res) => {
+    res.render('contact');
+});
 
+// POST route for contact form submission
+app.post('/contact', (req, res) => {
+    const { name, email, message } = req.body;
+
+    // Validate input
+    if (!name || !email || !message) {
+        req.flash('error', 'All fields are required.');
+        return res.redirect('/contact');
+    }
+
+    // Here you would typically handle the contact form submission
+    console.log(`Contact form submitted by ${name} (${email}): ${message}`);
+    
+    req.flash('success', 'Thank you for contacting us! We will get back to you soon.');
+    res.redirect('/contact');
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
