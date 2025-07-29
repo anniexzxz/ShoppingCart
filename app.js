@@ -290,20 +290,29 @@ app.get('/addProduct', checkAuthenticated, checkAdmin, (req, res) => {
   });
 
   // POST route to handle form submission
-  app.post('/addProduct', upload.single('image'), checkAuthenticated, checkAdmin, (req, res) => {
-    const { name, quantity, price } = req.body;
+  app.post('/addProduct', upload.single('image'), (req, res) => {
+    const { name, quantity, price, url } = req.body;
     const image = req.file ? req.file.filename : null;
   
-    const sql = 'INSERT INTO products (productName, quantity, price, image) VALUES (?, ?, ?, ?)';
-    connection.query(sql, [name, quantity, price, image], (error, results) => {
+    // Validate and parse input
+    const parsedQuantity = parseInt(quantity);
+    const parsedPrice = parseFloat(price);
+  
+    if (!name || isNaN(parsedQuantity) || isNaN(parsedPrice) || !url) {
+      console.error("Invalid input:", { name, quantity, price, url });
+      return res.status(400).send('Invalid input data');
+    }
+  
+    const sql = 'INSERT INTO products (productName, quantity, price, image, url) VALUES (?, ?, ?, ?, ?)';
+    connection.query(sql, [name, parsedQuantity, parsedPrice, image, url], (error, results) => {
       if (error) {
         console.error("Error adding product:", error);
-        res.status(500).send('Error adding product');
-      } else {
-        res.redirect('/inventory');
+        return res.status(500).send(`Error adding product: ${error.message}`);
       }
+      res.redirect('/inventory');
     });
   });
+  
 
 
 app.get('/updateProduct/:id',checkAuthenticated, checkAdmin, (req,res) => {
