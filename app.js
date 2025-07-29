@@ -391,7 +391,9 @@ app.get('/shopping', checkAuthenticated, (req, res) => {
 
 //Get route for contact page
 app.get('/contact', (req, res) => {
-    res.render('contact');
+    res.render('contact',{
+    success: req.flash('success'),
+    error: req.flash('error')});
 });
 
 // POST route for contact form submission
@@ -401,16 +403,17 @@ app.post('/contact', (req, res) => {
     // Validate input
     if (!name || !email || !message) {
         req.flash('error', 'All fields are required.');
-        res.redirect('/contact',{ messages: req.flash() });
+        res.redirect('/contact');
     }
 
     // Here you would typically handle the contact form submission
     console.log(`Contact form submitted by ${name} (${email}): ${message}`);
     
     req.flash('success', 'Thank you for contacting us! We will get back to you soon.');
-    res.redirect('/contact');
+    res.redirect('/contact',);
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
