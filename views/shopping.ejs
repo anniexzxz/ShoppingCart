@@ -21,9 +21,7 @@
             </li> 
             <li class="nav-item">
               <a class="nav-link" href="/logout">Logout</a>
-             <li class="nav-item">
-              <a class="nav-link" href="/addProduct">Add Product</a>
-            </li> 
+            </li>
           </ul>
         </div>
       </div>
@@ -32,7 +30,16 @@
   <div class="container">
     <p>Welcome, <%= user.username %> (<%= user.role %>)</p>
     <br>
-    <div class="text-center"><h2>Products from Shoppipipi</h2></div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h2>Products from Shoppipipi</h2>
+      
+      <form action="/shopping" method="GET">
+        <input type="text" name="search" placeholder="Search products by name" value="<%= search %>">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+  </form>
+    </div>  
     <br>
     <table class="table table-hover small text-center">
       <thead>
@@ -72,11 +79,13 @@
             </td>
 
             <td>
-                <form action="/add-to-cart/<%= products[i].productId %>" method="POST">
-                  <input type="hidden" name="quantity" id="quantity-<%= products[i].productId %>" value="1">
-                  <button type="submit" class="btn btn-primary mt-3">Buy</button>
-                </form>
+              <form action="/add-to-cart/<%= products[i].productId %>" method="POST">
+                <input type="hidden" name="quantity" id="quantity-<%= products[i].productId %>" value="1">
+                <button type="submit" class="btn btn-primary mt-3">Buy</button>
+              </form>
             </td>
+
+            
 
           </tr>
         <% } %>
