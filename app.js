@@ -290,7 +290,7 @@ app.get('/addProduct', checkAuthenticated, checkAdmin, (req, res) => {
   });
 
   // POST route to handle form submission
-  app.post('/addProduct', upload.single('image'), (req, res) => {
+  app.post('/addProduct', upload.single('image'), checkAuthenticated, checkAdmin, (req, res) => {
     const { name, quantity, price } = req.body;
     const image = req.file ? req.file.filename : null;
   
@@ -348,7 +348,7 @@ app.post('/updateProduct/:id', upload.single('image'), (req, res) => {
     });
 });
 
-app.get('/deleteProduct/:id', (req, res) => {
+app.get('/deleteProduct/:id', checkAuthenticated, checkAdmin, (req, res) => {
     const productId = req.params.id;
     connection.query('DELETE FROM products WHERE productId = ?', [productId], (error, results) => {
     if (error) {
