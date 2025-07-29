@@ -401,7 +401,7 @@ app.post('/contact', (req, res) => {
     // Validate input
     if (!name || !email || !message) {
         req.flash('error', 'All fields are required.');
-        return res.redirect('/contact');
+        res.redirect('/contact',{ messages: req.flash() });
     }
 
     // Here you would typically handle the contact form submission
