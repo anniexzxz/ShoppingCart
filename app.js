@@ -397,23 +397,39 @@ app.get('/contact', (req, res) => {
 });
 
 // POST route for contact form submission
-app.post('/contact', (req, res) => {
+app.post('/contact', checkAuthenticated, (req, res) => {
     const { name, email, message } = req.body;
 
-    // Validate input
     if (!name || !email || !message) {
         req.flash('error', 'All fields are required.');
-        res.redirect('/contact');
+        return res.redirect('/contact');
     }
 
-    // Here you would typically handle the contact form submission
-    console.log(`Contact form submitted by ${name} (${email}): ${message}`);
-    
-    req.flash('success', 'Thank you for contacting us! We will get back to you soon.');
-    res.redirect('/contact',);
+    const sql = 'INSERT INTO feedbacks (name, email, message) VALUES (?, ?, ?)';
+    connection.query(sql, [name, email, message], (err, result) => {
+        if (err) {
+            console.error('Error inserting feedback:', err);
+            req.flash('error', 'An error occurred. Please try again.');
+            return res.redirect('/contact');
+        }
+
+        req.flash('success', 'Thank you for contacting us! We will get back to you soon.');
+        res.redirect('/contact');
+    });
 });
+
+
+app.get('/userfeedback', checkAuthenticated, checkAdmin, (req, res) => {
+    const sql = 'SELECT * FROM feedbacks ORDER BY created_at DESC';
+    connection.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching feedback:', err);
+            return res.status(500).send('Error fetching feedback');
+        }
+        res.render('userfeedback', { feedbacks: results, user: req.session.user });
+    });
+});
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
