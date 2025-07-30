@@ -7,7 +7,7 @@
 </head>
 <body>
     <!-- Navbar -->
-  <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #EE4D2D;">
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">Shoppipipi</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
@@ -53,7 +53,15 @@
             <tr>
                 <td><%= cart[i].productName %></td>
                 <td><img src="/images/<%= cart[i].image %>" width="80" class="img-thumbnail"></td>
-                <td><input type="number" value="<%= cart[i].quantity %>" min="1"></td>
+                <td>
+                  <form action="/cart/update/<%= cart[i].productId %>" method="POST">
+                    <select class="form-control" name="quantity" onchange="this.form.submit()">
+                      <% for (let q = 1; q <= 5; q++) { %>
+                        <option value="<%= q %>" <%= q === cart[i].quantity ? 'selected' : '' %>><%= q %></option>
+                      <% } %>
+                    </select>
+                  </form>
+                </td>
                 <td>$<%= (cart[i].price * cart[i].quantity).toFixed(2) %></td>
                 <td>
                   <form action="/cart/delete/<%= cart[i].productId %>" method="POST">
