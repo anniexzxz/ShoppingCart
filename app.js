@@ -337,7 +337,7 @@ app.get('/updateProduct/:id',checkAuthenticated, checkAdmin, (req,res) => {
 app.post('/updateProduct/:id', upload.single('image'), (req, res) => {
     const productId = req.params.id;
     // Extract product data from the request body
-    const { name, quantity, price } = req.body;
+    const { name, quantity, price, url } = req.body;
     let image  = req.body.currentImage; //retrieve current image filename
     if (req.file) { //if new image is uploaded
         image = req.file.filename; // set image to be new image filename
