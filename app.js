@@ -464,5 +464,35 @@ app.post('/delete-feedback/:id', checkAuthenticated, checkAdmin, (req, res) => {
     });
 });
 
+// GET route to show the forgot password form
+app.get('/forgot-password', (req, res) => {
+  res.render('forgot-password', {
+    success: req.flash('success') || [],
+    error: req.flash('error') || []
+  });
+});
+
+// POST route to handle form submission
+app.post('/forgot-password', (req, res) => {
+    const { email, newPassword } = req.body;
+  
+    const sql = 'UPDATE users SET password = SHA1(?) WHERE email = ?';
+    connection.query(sql, [newPassword, email], (err, result) => {
+      if (err) {
+        console.error('Error changing password:', err);
+        req.flash('error', 'An error occurred. Please try again.');
+        return res.redirect('/forgot-password');
+      }
+  
+      if (result.affectedRows === 0) {
+        req.flash('error', 'No account found with that email.');
+        return res.redirect('/forgot-password');
+      }
+  
+      req.flash('success', 'Your password has been changed successfully.');
+      res.redirect('/forgot-password');
+    });
+  });
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
