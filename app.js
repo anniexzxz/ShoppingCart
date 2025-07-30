@@ -448,6 +448,21 @@ app.post('/cart/update/:id', (req, res) => {
     res.redirect('/cart');
 });
 
+app.post('/delete-feedback/:id', checkAuthenticated, checkAdmin, (req, res) => {
+    const feedbackId = req.params.id;
+
+    const sql = 'DELETE FROM feedbacks WHERE id = ?';
+    connection.query(sql, [feedbackId], (err, result) => {
+        if (err) {
+            console.error('Error deleting feedback:', err);
+            req.flash('error', 'Failed to delete feedback.');
+            return res.redirect('/userfeedback');
+        }
+
+        req.flash('success', 'Feedback deleted successfully.');
+        res.redirect('/userfeedback');
+    });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
