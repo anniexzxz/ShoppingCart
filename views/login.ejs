@@ -6,7 +6,7 @@
     <title>Shoppipipi App</title>
   </head>
   <body>
-      <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+       <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #EE4D2D;">
         <div class="container-fluid">
           <a class="navbar-brand" href="/">Shoppipipi</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
@@ -27,33 +27,39 @@
           </div>
         </div>
       </nav>
-    <div class="container">
-        <h1 class="mt-5">Login</h1>
-        <% if (errors && errors.length > 0) { %>
+  <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card p-4 shadow" style="width: 100%; max-width: 400px;">
+          <h3 class="text-center mb-4">Login to Shoppipipi</h3>
+      
+          <% if (errors && errors.length > 0) { %>
             <div class="alert alert-danger">
-                <% errors.forEach(function(error) { %>
-                    <p><%= error %></p>
-                <% }); %>
+              <% errors.forEach(function(error) { %>
+                <p><%= error %></p>
+              <% }); %>
             </div>
-        <% } %>
-        <% if (messages && messages.length > 0) { %>
+          <% } %>
+      
+          <% if (messages && messages.length > 0) { %>
             <div class="alert alert-success">
-                <% messages.forEach(function(message) { %>
-                    <p><%= message %></p>
-                <% }); %>
+              <% messages.forEach(function(message) { %>
+                <p><%= message %></p>
+              <% }); %>
             </div>
-        <% } %>
-        <form action="/login" method="POST" class="mt-4">
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" class="form-control" required>
+          <% } %>
+      
+          <form action="/login" method="POST">
+            <div class="form-group mb-3">
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email" class="form-control" required>
             </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" class="form-control" required>
+            <div class="form-group mb-3">
+              <label for="password">Password:</label>
+              <input type="password" id="password" name="password" class="form-control" required>
+                   <button type="submit" class="btn btn-primary">Login</button>
+              <a href="/forgot-password" class="btn btn-link">Forgot Password?</a>
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-    </div>
-</body>
-</html>
+            <p class="text-center mt-3">New to Shoppipipi? <a href="/signup">Sign Up</a></p>
+          </form>
+        </div>
+      </div>
+      
