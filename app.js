@@ -337,7 +337,7 @@ app.get('/updateProduct/:id',checkAuthenticated, checkAdmin, (req,res) => {
 app.post('/updateProduct/:id', upload.single('image'), (req, res) => {
     const productId = req.params.id;
     // Extract product data from the request body
-    const { name, quantity, price, url } = req.body;
+    const { name, quantity, price } = req.body;
     let image  = req.body.currentImage; //retrieve current image filename
     if (req.file) { //if new image is uploaded
         image = req.file.filename; // set image to be new image filename
@@ -428,6 +428,24 @@ app.get('/userfeedback', checkAuthenticated, checkAdmin, (req, res) => {
         }
         res.render('userfeedback', { feedbacks: results, user: req.session.user });
     });
+});
+
+app.post('/cart/update/:id', (req, res) => {
+    const productId = parseInt(req.params.id);
+    const newQuantity = parseInt(req.body.quantity);
+
+    if (!req.session.cart) {
+        return res.redirect('/cart');
+    }
+
+    for (let item of req.session.cart) {
+        if (item.productId === productId) {
+            item.quantity = newQuantity;
+            break;
+        }
+    }
+
+    res.redirect('/cart');
 });
 
 
